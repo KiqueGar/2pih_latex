@@ -1,0 +1,376 @@
+\documentclass[11pt,extrafontsizes,twoside,openany,final]{memoir} % 11pt is scaled down to 10.5 in \setmainfont call
+
+% THIS DOCUMENT REQUIRES LuaLaTeX TO COMPILE!
+% XeLaTeX should work (if the \ShowLoosenessHelp hand-tuning macro is not used)
+% but there might be formatting artefacts. In particular, it seems that the
+% letter and word spacing settings are processed differently.
+
+\usepackage{lettrine}		% Used for the fancy caps at the start of each chapter
+\usepackage{amsmath}		% Provides the align environment, used in chapter 13 for the notes
+\usepackage[protrusion=basictext]{microtype}
+                            % Makes right margin neater by letting certain punctuation protrude slightly
+\usepackage{fontspec}		% For the many fonts
+\usepackage{censor}         % For redacted name in chapter 89
+\usepackage{xstring}        % Needed for \IfInteger...
+
+\usepackage[bookmarks=true,unicode=true,pdfborder={0 0 0},
+	pdftitle={2pih},
+	pdfauthor={NanashiSaito}, breaklinks={true},
+	pdfkeywords={rationality},pdfencoding=auto
+]{hyperref}                 % Hyperlinks and bookmarks in PDF
+
+\usepackage{ellipsis}        % Must be loaded after fontspec and hyperref
+\renewcommand{\ellipsisgap}{.16667em}
+\newcommand{\ellipsisgapitalic}{.115em} % Gap must be reduced for italic (to be used manually)
+
+\usepackage[style=english]{csquotes}
+\MakeOuterQuote{"}	    % Automatic open and closing quotes
+
+\usepackage{fmtcount}       % Provides \NUMBERstringnum
+\usepackage{graphicx}       % for \reflectbox in header
+\usepackage[normalem]{ulem} % For \censor in chapter 64
+
+%\input{hand-tuning}
+%\ShowLoosenessHelp
+%\ShowGrid
+
+\renewcommand*{\thefootnote}{\fnsymbol{footnote}}% We have only one footnote in the introduction
+
+\providecommand{\LineSpread}{1.11}% Won't override a different value set in hpmor-X.tex
+\setlength{\parskip}{0pt}% Default is 0 with rubber
+\setSingleSpace{\LineSpread}
+\SingleSpace
+
+\setlength{\parindent}{1.5em}
+
+% \overfullrule=5pt % Mark overfull hbox with black rectangle
+
+% Make framed boxes (for debugging) take no additional space
+% \fboxrule=1pt
+% \fboxsep=-1pt
+
+%
+% Set-up page sizes and margins
+%
+%\setstocksize{205mm}{135mm}
+%\settrimmedsize{\stockheight}{\stockwidth}{*}
+%\settrims{0mm}{0mm}
+\setstocksize{211mm}{141mm}% Size of paper fed to the printer
+\settrimmedsize{205mm}{135mm}{*}% Size of paper after trimming the edges
+\settrims{3mm}{3mm}% Amount trimmed from the top and fore-edge
+\settypeblocksize{164mm}{107mm}{*} % Size of main text (will be adjusted below)
+%\setbinding{5mm}% Space reserved on spine side for binding: not used, margins set explicitely
+%\setlrmargins{*}{*}{1.1}% Ratio between spine and edge margins: unused, margins set explicitely
+% Spine and fore-edge margins: spine margin should look a bit smaller (as there
+% are two next to each other) but we must account for the binding.
+\setlrmarginsandblock{21mm}{17mm}{*}
+\setulmargins{*}{*}{1.2}% Ratio between up and down margins
+\setheadfoot{\baselineskip}{2\baselineskip}% Header height and skip from text bottom to footer bottom
+\setheaderspaces{*}{*}{*}% Equal spacing above and below header
+\settypeoutlayoutunit{mm}% Print dimensions in millimeters in compilation output
+\checkandfixthelayout% Apply the layout
+
+%
+% Font setup: URW Garamond No. 8
+%
+\setmainfont[
+, ExternalLocation=fonts/garamond/
+%, ExternalLocation=C:/Users/Kique/Documents/Working/2pih_latex/build/fonts/garamond/
+, Ligatures={Common,TeX}
+, UprightFont=*-Regular
+, ItalicFont=*-Italic
+, BoldFont=*-Bold
+, BoldItalicFont=*-Bold-Italic
+, Scale=0.95
+]{GaramondNo8}
+%
+% Chapters, headings, etc.: Lumos (extra spacing looks much better)
+\newfontface\hp[ExternalLocation=fonts/lumos/, LetterSpace=6.0, WordSpace=1.85]{Lumos}
+% Slightly scaled up font, so that we can get a size between the 11pt \footnotesize and \scriptsize
+\newfontface\hpScaledUp[ExternalLocation=fonts/lumos/, LetterSpace=6.0, WordSpace=1.85, Scale=1.05]{Lumos}
+% Uppercase Lumos, used in the title pages
+\newcommand{\lumos}[1]{{\hp\MakeUppercase{#1}}}
+% Chapter numbers: Lumos (extreme spacing for effect)
+\newfontface\hpchap[ExternalLocation=fonts/lumos/, LetterSpace=40.0, WordSpace=5.0]{Lumos}
+%
+% Font used to draw the magic star
+\newfontface\starfont[ExternalLocation=fonts/]{Miscelanea.ttf}
+%
+% TODO: Check if \Star and \Stars are used anywhere, or delete them
+% Draws a "magic star", used as a decoration
+\newcommand*{\Star}{{\starfont{}*}}
+%
+% Draws three "magic stars", used as a decoration everywhere
+\newcommand*{\Stars}{{\large\Star\kern-.6ex\lower1.3ex\hbox{\large\Star}%
+    \kern-.1ex\raise.2ex\hbox{\tiny\Star}\spacefactor1000}}
+%
+% Parseltongue
+\newfontface\ptsansi[
+, ExternalLocation=fonts/alegreya-sans/
+, Ligatures={Common,TeX}
+, UprightFont=*-Light
+, ItalicFont=*-LightItalic
+, BoldFont=*-Regular
+, BoldItalicFont=*-Italic
+, Scale=0.95
+]{AlegreyaSans}
+
+%
+% Section break with three spaced stars
+%
+% TODO: Replace this section break with line or similar
+\newcommand{\sbreak}{%
+    \par
+    \SomeVSpace
+    \hfill\raisebox{-.5ex}{\Star\qquad\Star\qquad\Star}\hfill\null% So the \hfill is not removed
+    \SomeVSpace
+    \par\noindent
+}
+
+%
+% Custom chapter style
+%
+\makechapterstyle{evans}{%
+	\renewcommand*{\chapnamefont}{\hpchap\normalsize}
+	\renewcommand*{\chapnumfont}{\chapnamefont\normalsize}
+	\renewcommand*{\chaptitlefont}{\hp\large}
+	
+	\setlength{\beforechapskip}{0pt}
+	\setlength{\midchapskip}{1.1cm plus .5\baselineskip minus .5\baselineskip}
+	\setlength{\afterchapskip}{1.1cm plus .5\baselineskip minus .5\baselineskip}% Some stretchable glue is necessary to avoid vbox fill messages
+	
+	\renewcommand*{\printchapternum}{% " C H A P T E R   O N E "
+		\begin{center} \chapnumfont \hyperref[contents]{CHAPTER \NUMBERstringnum{\thechapter}}\end{center}}
+
+	\renewcommand*{\printchaptername}{}% Not needed, "CHAPTER" added above
+	
+	\renewcommand*{\printchaptertitle}[1]{% "A DAY OF VERY LOW PROBABILITY"
+		\begin{center}\chaptitlefont \MakeUppercase{##1}\end{center}}
+	
+	\renewcommand*{\chaptermark}[1]{% "CHAPTER ONE" and "A DAY OF..."
+		\markboth{\MakeUppercase{\chaptername}~\thechapter}%
+			{\MakeUppercase{##1}}}
+
+	\renewcommand*{\tocmark}{\markboth{}{\MakeUppercase{Contents}}}
+	
+	\renewcommand{\tocheadstart}{\chapterheadstart}
+	\renewcommand{\aftertoctitle}{\thispagestyle{empty}\afterchaptertitle}
+}
+\chapterstyle{evans}% Actually implements the above chapter style code
+
+% Macro to convert a number to uppercase Roman
+\makeatletter
+\newcommand*{\RomNum}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+
+% Command to choose where to break the line in long chapter titles
+\newcommand*{\wrapchapter}[2]{
+	\chapter[#1 #2]           % TOC and page header
+	{#1\protect\linebreak #2}}% Title
+
+% Macro to format an abbreviation such as "TSPE" for "the Stanford Prison Experiment"
+\newcommand{\abbrev}[1]{{\scshape \MakeLowercase{#1}}}
+
+% Formatting of the part numbers.
+% Numbers are formatted as roman numerals (0 is left unchanged).
+% Non-numbers are also left unchanged, and without a "Part~" prefix. This is used for chapter 77.
+% This implementation is expandable and so causes no issue with hyperref.
+\newcommand{\formatPart}[1]{\ifnum0<0#1\relax Part~\RomNum{#1}\else \if 0#1\relax Part~0\else #1\fi\fi}
+\newcommand{\formatPartShort}[1]{\ifnum0<0#1\relax \RomNum{#1}\else #1\fi}% Same case for 0 and non-numeric
+
+% TODO: check if a structure like this exists, or delete this section
+% % \partchapter{The Stanford Prison Experiment}{1}
+% % TOC: The Stanford Prison Experiment, Part I
+% % Page header: The Stanford Prison Experiment I
+% % Title: The Stanford Prison Experiment, Part I
+% \newcommand{\partchapter}[2]{%
+% 	\chapter[#1, \formatPart{#2}]%
+% 		[#1 \formatPartShort{#2}]%
+% 		{#1, \formatPart{#2}}}
+
+% % \namedpartchapter{Taboo Tradeoffs}{2}{The Horns Effect}
+% % TOC: Taboo Tradeoffs, Part II: The Horns Effect
+% % Page header: Taboo Tradeoffs II: The Horns Effect
+% % Title: Taboo Tradeoffs, Part II: \\? The Horns Effect
+% % The optional argument affects whether the line is broken after "Part ...:"
+% \newcommand{\namedpartchapter}[5][1]{%
+% 	\chapter[#2, \formatPart{#3}: #4]%
+% 		[\mbox{#2 \formatPartShort{#3}:} \mbox{#4}]%
+% 		{#2, \formatPart{#3}:\protect\linebreak[#1] #4}}
+
+% % \abbrevnamedpartchapter{The Stanford Prison Experiment}{TSPE}{6}{Constrained Optimization}
+% % TOC: \abbrev{TSPE}, Part VI: Constrained Optimization
+% % Page header: TSPE VI: Constrained Optimization
+% % Title: The Stanford Prison Experiment, Part VI: \\? Constrained Optimization
+% % The optional argument affects whether the line is broken after "Part ...:"
+% \newcommand{\abbrevnamedpartchapter}[6][1]{%
+% 	\chapter[\texorpdfstring{\abbrev{#3}, \formatPart{#4}: #5}{#3, \formatPart{#4}: #5}]%
+% 		[\mbox{#3 \formatPartShort{#4}:} \mbox{#5}]%
+% 		{#2, \formatPart{#4}:\protect\linebreak[#1] #5}}
+% TODO check if a structure like this exists, or delete this section END
+
+% Single space after a period (also avoids having to take care of spacing after
+% abbreviations)
+\frenchspacing
+
+% If a paragraph cannot be typeset without overfull boxes, try adding some
+% stretchable glue in each line
+\setlength{\emergencystretch}{.04\textwidth}
+
+% Lettrine font pick and configuration
+%
+\renewcommand{\LettrineFontHook}{\hp} % Uses Lumos for the large letter
+\renewcommand{\LettrineTextFont}{} % Normal font for the rest of the first word
+% For when the first word is in italics, use this command instead
+\newcommand{\lettrinemph}[3][]{\lettrine[#1]{#2}{\emph{#3}}}
+\setcounter{DefaultLines}{1}
+% Large cap instead of drop cap because of many short first lines
+\renewcommand{\DefaultLoversize}{0}
+\renewcommand{\DefaultLraise}{0}
+
+%
+% Page numbering, footer, header
+%
+\newcommand{\pageInFooter}{{\small\makebox[2em][c]{\thepage}}}
+% Page number centered in footer
+% Same on all pages in body text
+\makeevenfoot{plain}{}{\pageInFooter}{}
+\makeoddfoot{plain}{}{\pageInFooter}{}
+\makeevenfoot{headings}{}{\pageInFooter}{}
+\makeoddfoot{headings}{}{\pageInFooter}{}
+%
+% Left side header: chapter number
+% Right side header: chapter name
+\makeevenhead{headings}{}{\hpScaledUp\hyperref[contents]{\scriptsize\leftmark}}{}
+\makeoddhead{headings}{}{\hpScaledUp\scriptsize\rightmark}{}
+% Style definitions and hacks
+%
+% In the text, the ellipsis is encoded with \el, which we define here to \dots
+% preceded by the same amount of space as used between the dots (see the
+% ellipsis package configuration above). Note that the ellpsis package is
+% necessary for \dots to generate three spaced dots when compiling with
+% lualatex or xelatex (otherwise one gets a single glyph of 3 packed dots). We
+% use \dots instead of \ldots because of a buggy interaction with the amsmath
+% package.
+\newcommand*{\el}{\leavevmode\kern \ellipsisgap\dots} % Ellipsis definition
+%
+% Logical formatting macros
+\newcommand*\parsel[1]{{\ptsansi\textit{#1}}} % Parseltongue
+\newcommand*{\prophecy}[1]{\textsc{#1}} % Prophecies
+\newcommand*{\headline}[1]{\begin{center}\textsc{#1}\end{center}} % Newspaper headlines
+\newcommand*{\inlineheadline}[1]{\textsc{#1}} % Newspaper headlines inline with text
+%
+% Macros for time of day. Using '/' suffix to avoid eating a following space.
+\def\AM/{{\,\scshape am}} % AM in small caps
+\def\PM/{{\,\scshape pm}} % PM in small caps
+
+% Define vertical spaces between .5 and 1.5 lines to keep text on a grid as much as possible.
+% (these spaces are typically used before and after a list, note etc. Using
+% twice .5 lines or twice 1.5 lines means we get back to grid typesetting after
+% the second space.)
+\newlength{\gridvskip}
+\setlength{\gridvskip}{1\baselineskip}
+\newlength{\gridsmallvskip}
+\setlength{\gridsmallvskip}{.5\baselineskip}
+\newcommand*{\SomeVSpace}{\vskip \gridvskip\relax}
+\newcommand*{\SmallVSpace}{\vskip \gridsmallvskip\relax}
+
+% Subsections style and spacing (Aftermath:, Act:, etc.)
+\setsubsecheadstyle{\scshape} % Subsection titles in small caps
+\setbeforesubsecskip{0\baselineskip}% Note: a negative value here means no indent
+\setaftersubsecskip{1\baselineskip}
+
+% Space around lists
+%
+% Remove extra space around lists and between items. It looks better and helps
+% typesetting on the grid. This command must come first, or it would overwrite
+% some of the other changes below.
+\tightlists*
+% Set space before and after lists and center environments
+\setlength{\topsep}{\gridvskip}
+% Set additional space added to lists that start a new paragraph. Also used by
+% adjustwidth
+\setlength{\partopsep}{0pt}
+
+% The tabular environment results in some vertical space missing after the tabular,
+% allow TeX to fill it with some stretchable glue
+\let\Oldendtabular\endtabular
+\def\endtabular{\Oldendtabular\vskip0pt plus .1\baselineskip\relax}
+
+% Makes a written note in italics (first used, Hogwarts acceptance letter)
+\newenvironment{writtenNote}{%
+    \SomeVSpace
+    \begin{adjustwidth}{\parindent}{\parindent}%
+        \begin{em}\par\noindent
+}{%
+        \end{em}%
+    \end{adjustwidth}%
+    \SomeVSpace
+}
+% Makes a letter address and closing, for use with above writtenNote environment
+\newcommand{\letterAddress}[1]{\pagebreak[1]\noindent{}#1\nopagebreak[4]\par}
+\newcommand{\letterClosing}[2][\vskip 1\baselineskip]{\nopagebreak[4]#1\par\nopagebreak[5]\noindent#2}
+
+% Format a "thought" paragraph: vertical space around, consistent and controllable indent
+\newenvironment{thought}[1][\parindent]{%
+    \SmallVSpace% vertical space, also terminates previous paragraph
+    \hangindent=#1% apply indent given in optional argument
+    \hangafter=0% apply indent from the first line
+    \parindent=0pt% disable extra indent for first line
+}{%
+    \SmallVSpace% vertical space, also terminates paragraph
+}
+
+% TODO: Clean this omake files
+% % Commands for formatting the titles of the fourth omake, in chapter 64
+% \newcommand{\omakeFourTitle}[2]{%
+% \vskip 0pt plus 1\baselineskip%
+% \noindent\hfill\scalebox{#2}{#1}\hfill\mbox{}%
+% \vskip 1\baselineskip plus 0pt minus .5\baselineskip
+% }
+% %
+% \newcommand{\omakeFourFontTextLotR}{%
+% \fontspec[ExternalLocation=fonts/ringbearer/]{RingBearer}
+% \settowidth{\versewidth}{\mbox{the}}
+% Lord\scalebox{.40}{\parbox[b]{\versewidth}{
+% 	\centering of\\\nointerlineskip\vskip 4pt the}}Rationalit\raisebox{-.32ex}{Y}
+% }
+% %
+% \newcommand{\omakeFourFontTextWardrobe}{%
+% \fontspec[ExternalLocation=fonts/narnia/]{NarniaBLL}
+% 456}% 4, 5 and 6 encode "The Witch", "and" and "the Wardrobe"
+% %
+% \newcommand{\omakeFourFontTextThunder}{%
+% \fontspec[ExternalLocation=fonts/thundercats/]{Thundercats}
+% ThunderSmarts}
+% %
+% \newcommand{\omakeFourFontTextTwilight}{%
+% \fontspec[ExternalLocation=fonts/]{Twilight}
+% Utilitarian Twilight}
+% %
+% \newcommand*{\omakeFourLogo}[3][]{%
+% \omakeFourTitle{%
+%     \includegraphics[width=#2\linewidth,#1]{omake4-titles/#3}%
+% }{1}}
+% TODO: Clean this omake files END
+% Hyphenation corrections
+%
+\hyphenation{Her-mi-o-ne Gran-ger bru-shes Gryf-fin-dor Gryf-fin-dors Le-strange
+some-where which-ev-er Hog-warts re-pli-cat-ed ran-dom sta-tis-ti-cal 
+Wi-zen-gam-ot an-aly-se an-aly-sis re-mem-ber Mc-Gon-a-gall fun-da-men-tal
+Dum-ble-dore thou-sand Huf-fle-puff Huf-fle-puffs Slyther-in Slyther-ins Har-ry
+Flit-wick win-gar-di-um le-viosa Dra-co Tre-lawney Sev-erus Mal-foy}
+
+\newcommand{\UnsetValue}{UNSET}
+\newcommand{\CoverAuthor}{TODO: Define Cover author}% Set cover author here, to appear in colophon
+\newcommand{\PdfSourceUrl}{github.com/KiqueGar/2pih_latex}% Set URL for the book's source code, to appear in colophon
+
+% Check that the cover author and PDF URL are set and if not, print a message to the log
+\newcommand{\CheckIsSet}[1]{{
+    \edef\first{\UnsetValue}
+    \edef\second{#1}
+    \ifx\first\second
+        \typeout{^^JYOU NEED TO SET \string#1\space IN hp-header.tex^^J}
+    \fi}}
+\CheckIsSet{\CoverAuthor}
+\CheckIsSet{\PdfSourceUrl}
