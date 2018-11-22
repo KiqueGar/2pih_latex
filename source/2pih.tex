@@ -9,6 +9,20 @@
 \newcommand{\BookTitle}{Orders of Magnitude}		% Will appear frequently
 
 \input{2pih-title}
-\input{2pih-intro}
+\input{2pih-contents}
 
+\cleartorecto
+\pagestyle{plain}
+\input{2pih-intro}
+\addtocontents{toc}{\vspace{7pt}}% Add some space between front- and main-matter in TOC
+
+\clearpage
+\pagestyle{headings}
+\chapterstyle{evans}% For some reason we need to call this again to have headings on odd pages
+
+
+\mainmatter
+\include{chapters/2pih_prologue}
+\include{chapters/2pih_00}
+\include{chapters/2pih_01}
 \end{document}
