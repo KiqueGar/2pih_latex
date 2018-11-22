@@ -10,6 +10,8 @@
 \setlength\cftchapternumwidth{0pt}
 \renewcommand{\cftchapterafterpnum}{\cftparfillskip}
 \renewcommand{\cftchapterfont}{\hfil}% Left side hfil, for centering
+
+\setcounter{chapter}{-1}		% This book starts in Ch. 0
 \renewcommand\chapternumberline[1]{%
  \thispagestyle{empty}% So that all TOC pages have no header and footer
  {\hp{\IfInteger{#1}{\NUMBERstringnum{#1}}{Appendix #1}}}% Chapter number
