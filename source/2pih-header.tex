@@ -29,6 +29,7 @@
 \usepackage{fmtcount}       % Provides \NUMBERstringnum
 \usepackage{graphicx}       % for \reflectbox in header
 \usepackage[normalem]{ulem} % For \censor in chapter 64
+\usepackage{ragged2e}		% For allignment left or right
 
 %\input{hand-tuning}
 %\ShowLoosenessHelp
@@ -125,6 +126,14 @@
     \hfill\raisebox{-.5ex}{\Star\qquad\Star\qquad\Star}\hfill\null% So the \hfill is not removed
     \SomeVSpace
     \par\noindent
+}
+
+\newcommand{\simpleline}{
+	\par
+	\SomeVSpace
+	\noindent\rule{\textwidth}{0.4pt}
+	\SomeVSpace
+	\par
 }
 
 %
@@ -259,6 +268,9 @@
 \newcommand*{\prophecy}[1]{\textsc{#1}} % Prophecies
 \newcommand*{\headline}[1]{\begin{center}\textsc{#1}\end{center}} % Newspaper headlines
 \newcommand*{\inlineheadline}[1]{\textsc{#1}} % Newspaper headlines inline with text
+\newcommand*{\DatePlace}[1]{\begin{flushleft}\small\textsc{#1}\end{flushleft}\par}
+
+\newcommand*{\DatePlaceInv}[1]{\begin{flushright}\small\textsc{#1}\end{flushright}\par}
 %
 % Macros for time of day. Using '/' suffix to avoid eating a following space.
 \def\AM/{{\,\scshape am}} % AM in small caps
