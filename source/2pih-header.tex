@@ -30,6 +30,9 @@
 \usepackage{graphicx}       % for \reflectbox in header
 \usepackage[normalem]{ulem} % For \censor in chapter 64
 \usepackage{ragged2e}		% For allignment left or right
+\usepackage{wasysym}		% For music symbols on song fragments
+\usepackage{siunitx}		% For exponential notation
+\usepackage{cjhebrew}		% For hebrew in chapter 2
 
 %\input{hand-tuning}
 %\ShowLoosenessHelp
@@ -271,6 +274,8 @@
 \newcommand*{\DatePlace}[1]{\begin{flushleft}\small\textsc{#1}\end{flushleft}\par}
 
 \newcommand*{\DatePlaceInv}[1]{\begin{flushright}\small\textsc{#1}\end{flushright}\par}
+											  % Song lyrics
+\newcommand*{\song}[1]{\begin{flushright}\eighthnote\twonotes~\textit{#1}~\twonotes\eighthnote\end{flushright}\par}
 %
 % Macros for time of day. Using '/' suffix to avoid eating a following space.
 \def\AM/{{\,\scshape am}} % AM in small caps
