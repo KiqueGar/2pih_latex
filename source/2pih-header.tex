@@ -161,15 +161,20 @@
 	
 	\renewcommand*{\printchapternum}{% " C H A P T E R   O N E "
 		\begin{center} \chapnumfont \hyperref[contents]{CHAPTER \NUMBERstringnum{\thechapter}}\end{center}}
-
+	
 	\renewcommand*{\printchaptername}{}% Not needed, "CHAPTER" added above
 	
 	\renewcommand*{\printchaptertitle}[1]{% "A DAY OF VERY LOW PROBABILITY"
 		\begin{center}\chaptitlefont \MakeUppercase{##1}\end{center}}
 	
 	\renewcommand*{\chaptermark}[1]{% "CHAPTER ONE" and "A DAY OF..."
+	\ifnum \thechapter < 0		% This is awfully implemented, will try something different later
+		\markboth{\MakeUppercase{Strange loops}}
+			{\MakeUppercase{Prologue}}%
+	\else
 		\markboth{\MakeUppercase{\chaptername}~\thechapter}%
-			{\MakeUppercase{##1}}}
+			{\MakeUppercase{##1}}
+	\fi		}
 
 	\renewcommand*{\tocmark}{\markboth{}{\MakeUppercase{Contents}}}
 	
