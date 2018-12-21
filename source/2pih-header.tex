@@ -352,6 +352,15 @@
 }{%
     \SmallVSpace% vertical space, also terminates paragraph
 }
+\newenvironment{quotePoem}[2]
+ 	{	
+ 		\begin{verse}
+ 			\small{#1}
+ 		\end{verse}
+ 		\begin{flushright}
+ 			\small\emph{#2}
+ 		\end{flushright} 
+ 	}{}
 
 % TODO: Clean this omake files
 % % Commands for formatting the titles of the fourth omake, in chapter 64
