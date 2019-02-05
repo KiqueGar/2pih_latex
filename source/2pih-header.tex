@@ -364,6 +364,23 @@
  		\end{flushright} 
  	}{}
 
+\newenvironment{playScript}[2]
+	{
+
+		\settowidth{\versewidth}{#2}
+ 		\begin{verse}[\versewidth]
+		{	
+			% Character Name + dialogue
+			\newcommand*{\dialogue}[1]{\noindent\flagverse{##1}}	%CHARACTER: .....
+			% Authors
+			\newcommand{\attrib}[1]{\raggedleft\small \emph{##1} \normalsize\par}	
+			
+			\small{#1}
+		}
+		\end{verse}
+ 		\normalsize
+	}{}
+
 % TODO: Clean this omake files
 % % Commands for formatting the titles of the fourth omake, in chapter 64
 % \newcommand{\omakeFourTitle}[2]{%
