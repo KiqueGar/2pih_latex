@@ -352,17 +352,17 @@
 }{%
     \SmallVSpace% vertical space, also terminates paragraph
 }
-\newenvironment{quotePoem}[2]
+\newenvironment{quotePoem}[1]
  	{	
  		\begin{verse}
- 		{	\itshape
+ 		{	
+ 			% Authors
+			\newcommand{\attrib}[1]{\raggedleft\small \emph{##1} \normalsize\par}
+ 			\itshape
  			\small{#1}
  		}
  		\end{verse}
- 		\begin{flushright}
- 			\small\emph{#2}
- 		\end{flushright} 
- 	}{}
+  	}{}
 
 \newenvironment{playScript}[2]
 	{
