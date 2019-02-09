@@ -373,8 +373,10 @@
 		{	
 			% Character Name + dialogue
 			\newcommand*{\dialogue}[1]{\noindent\flagverse{##1}}	%CHARACTER: .....
+			% Character Name + dialogue
+			\newcommand*{\sdialogue}[1]{\noindent\scriptsize\flagverse{##1}\small}	%CHARACTER: .....
 			% Authors
-			\newcommand{\attrib}[1]{\raggedleft\small \emph{##1} \normalsize\par}	
+			\newcommand{\attrib}[1]{\raggedleft\footnotesize{##1} \normalsize\par}	
 			
 			\small{#1}
 		}
